@@ -45,8 +45,8 @@ function drawBoard() {
             ballMatrix[i][j].y += (i * 100)
             ballMatrix[i][j].draw(ctx)
         }
-        showCurrentPlayer()
     }
+    showCurrentPlayer()
     clearInterval(intervalId)
     intervalId = null
     addEvent()
@@ -82,10 +82,9 @@ function eventHandler(event) {
         --currentPlayer
     }
     showCurrentPlayer()
-    checkSecundaryDiagonal()
-    checkMainDiagonal()
-    checkColumn()
-    checkLines()
+    checkDiagonals(colorOfPlayer)
+    checkColumn(colorOfPlayer)
+    checkLines(colorOfPlayer)
     checkTied(ctx)
 }
 
@@ -106,182 +105,75 @@ function showCurrentPlayer() {
     currentPlayerBall.draw(secondCtx)
 }
 
-function checkSecundaryDiagonal() {
-    let indexOfLine = 2
-    let indexOfColomn = 0
-    let redCounter = 0
-    let purpleCounter = 0
-    for (let i = 0; i < 3; ++i) {
-        ++indexOfLine
-        indexOfColomn = 0
-        redCounter = 0
-        purpleCounter = 0
-        for (let j = indexOfLine; j >= 0; --j) {
-            if (ballMatrix[j][indexOfColomn].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(j, indexOfColomn, j + 1, indexOfColomn - 1, j + 2, indexOfColomn - 2, j + 3, indexOfColomn - 3, "red")
-                }
-            } else {
-                redCounter = 0
-            }
-            if (ballMatrix[j][indexOfColomn].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(j, indexOfColomn, j + 1, indexOfColomn - 1, j + 2, indexOfColomn - 2, j + 3, indexOfColomn - 3, "purple")
-                }
-            } else {
-                purpleCounter = 0
-            }
-            ++indexOfColomn
-        }
-    }
-    indexOfColomn = 0;
-    for (let i = 0; i < 3; ++i) {
-        redCounter = 0
-        purpleCounter = 0
-        ++indexOfColomn
-        indexOfLine = 5
-        for (let j = indexOfColomn; j < 7; ++j) {
-            if (ballMatrix[indexOfLine][j].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(indexOfLine, j, indexOfLine + 1, j - 1, indexOfLine + 2, j - 2, indexOfLine + 3, j - 3, "red")
-                }
-            } else {
-                redCounter = 0
-            }
-            if (ballMatrix[indexOfLine][j].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(indexOfLine, j, indexOfLine + 1, j - 1, indexOfLine + 2, j - 2, indexOfLine + 3, j - 3, "purple")
-                }
-            } else {
-                purpleCounter = 0
-            }
-            --indexOfLine
-        }
-    }
-}
-
-function checkMainDiagonal() {
-    let indexOfLine = 3
-    let indexOfColomn = 0
-    let redCounter = 0
-    let purpleCounter = 0
-    for (let i = 0; i < 3; ++i) {
-        --indexOfLine
-        redCounter = 0
-        purpleCounter = 0
-        indexOfColomn = 0
-        for (let j = indexOfLine; j < 6; ++j) {
-            if (ballMatrix[j][indexOfColomn].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(j, indexOfColomn, j - 1, indexOfColomn - 1, j - 2, indexOfColomn - 2, j - 3, indexOfColomn - 3, "red")
-                }
-            } else {
-                redCounter = 0
-            }
-            if (ballMatrix[j][indexOfColomn].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(j, indexOfColomn, j - 1, indexOfColomn - 1, j - 2, indexOfColomn - 2, j - 3, indexOfColomn - 3, "purple")
-                    console.log(purpleCounter)
-                }
-            } else {
-                purpleCounter = 0
-            }
-            ++indexOfColomn
-        }
-    }
-    indexOfColomn = 0
-
-    for (let i = 0; i < 3; ++i) {
-        indexOfLine = 0
-        ++indexOfColomn
-        redCounter = 0
-        purpleCounter = 0
-        for (let j = indexOfColomn; j < 7; ++j) {
-            if (ballMatrix[indexOfLine][j].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(indexOfLine, j, indexOfLine - 1, j - 1, indexOfLine - 2, j - 2, indexOfLine - 3, j - 3, "red")
-                    return;
-                }
-            } else {
-                redCounter = 0
-            }
-            if (ballMatrix[indexOfLine][j].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(indexOfLine, j, indexOfLine - 1, j - 1, indexOfLine - 2, j - 2, indexOfLine - 3, j - 3, "purple")
-                }
-            } else {
-                purpleCounter = 0
-            }
-            ++indexOfLine
-        }
-    }
-}
-
-function checkLines() {
-    for (let i = 5; i >= 0; --i) {
-        let redCounter = 0
-        let purpleCounter = 0
+function checkDiagonals(colorOfPlayer) {
+    let dj = [0, 0, 0, 1, 2, 3]
+    let di = [2, 1, 0, 0, 0, 0]
+    let secondDi = [3, 4, 5, 5, 5, 5]
+    let mainCounter = 0
+    let secondCounter = 0
+    for (let i = 0; i < 6; ++i) {
+        mainCounter = 0
         for (let j = 0; j < 7; ++j) {
-            if (ballMatrix[i][j].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(i, j, i, j - 1, i, j - 2, i, j - 3, "red")
-                    return;
+            if (dj[i] + j <= 6 && di[i] + j <= 5) {
+                if (ballMatrix[di[i] + j][dj[i] + j].color == colorOfPlayer) {
+                    ++mainCounter
+                    if (mainCounter == 4) {
+                        OutputWinner(di[i] + j, dj[i] + j, di[i] + j - 1, dj[i] + j - 1, di[i] + j - 2, dj[i] + j - 2, di[i] + j - 3, dj[i] + j - 3)
+                    }
+                } else {
+                    mainCounter = 0
                 }
-            } else {
-                redCounter = 0
             }
-            if (ballMatrix[i][j].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(i, j, i, j - 1, i, j - 2, i, j - 3, "purple")
-                    console.log(purpleCounter)
+            if (secondDi[i] - j >= 0 && dj[i] + j <= 6) {
+                if (ballMatrix[secondDi[i] - j][dj[i] + j].color == colorOfPlayer) {
+                    ++secondCounter
+                    if (secondCounter == 4) {
+                        OutputWinner(secondDi[i] - j, dj[i] + j, secondDi[i] - j+1, dj[i] + j-1, secondDi[i] - j+2, dj[i] + j-2, secondDi[i] - j+3, dj[i] + j-3)
+                    }
                 }
-            } else {
-                purpleCounter = 0
+                else{
+                    secondCounter=0
+                }
             }
-
         }
-
     }
 }
 
-function checkColumn() {
+function checkLines(colorOfPlayer) {
+    for (let i = 5; i >= 0; --i) {
+        let counter = 0
+        for (let j = 0; j < 7; ++j) {
+            if (ballMatrix[i][j].color == colorOfPlayer) {
+                ++counter
+                if (counter == 4) {
+                    OutputWinner(i, j, i, j - 1, i, j - 2, i, j - 3)
+                    return;
+                }
+            } else {
+                counter = 0
+            }
+        }
+    }
+}
+
+function checkColumn(colorOfPlayer) {
     for (let i = 0; i < 7; ++i) {
-        let redCounter = 0
-        let purpleCounter = 0
+        let counter = 0
         for (let j = 0; j < 6; ++j) {
-            if (ballMatrix[j][i].color == "red") {
-                ++redCounter
-                if (redCounter == 4) {
-                    OutputWinner(j, i, j - 1, i, j - 2, i, j - 3, i, "red")
+            if (ballMatrix[j][i].color == colorOfPlayer) {
+                ++counter
+                if (counter == 4) {
+                    OutputWinner(j, i, j - 1, i, j - 2, i, j - 3, i)
                     return;
                 }
             } else {
-                redCounter = 0
-            }
-            if (ballMatrix[j][i].color == "purple") {
-                ++purpleCounter
-                if (purpleCounter == 4) {
-                    OutputWinner(j, i, j - 1, i, j - 2, i, j - 3, i, "purple")
-                    console.log(purpleCounter)
-                }
-            } else {
-                purpleCounter = 0
+                counter = 0
             }
         }
     }
 }
 
-function OutputWinner(i1, j1, i2, j2, i3, j3, i4, j4, winner) {
+function OutputWinner(i1, j1, i2, j2, i3, j3, i4, j4) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
     ballMatrix[i1][j1].shadowColor = "white"
@@ -344,4 +236,3 @@ function checkTied(ctx) {
         ctx.fillText("Egalitate", 150, 300);
     }
 }
-
