@@ -118,7 +118,9 @@ function checkDiagonals(colorOfPlayer) {
                 if (ballMatrix[di[i] + j][dj[i] + j].color == colorOfPlayer) {
                     ++mainCounter
                     if (mainCounter == 4) {
-                        OutputWinner(di[i] + j, dj[i] + j, di[i] + j - 1, dj[i] + j - 1, di[i] + j - 2, dj[i] + j - 2, di[i] + j - 3, dj[i] + j - 3)
+                        let whinnerBalls=[ballMatrix[di[i] + j][dj[i] + j],ballMatrix[di[i] + j - 1][dj[i] + j - 1],ballMatrix[di[i] + j - 2][dj[i] + j - 2],ballMatrix[di[i] + j - 3][dj[i] + j - 3]]
+                        OutputWinner(whinnerBalls)
+                        
                     }
                 } else {
                     mainCounter = 0
@@ -128,7 +130,8 @@ function checkDiagonals(colorOfPlayer) {
                 if (ballMatrix[secondDi[i] - j][dj[i] + j].color == colorOfPlayer) {
                     ++secondCounter
                     if (secondCounter == 4) {
-                        OutputWinner(secondDi[i] - j, dj[i] + j, secondDi[i] - j+1, dj[i] + j-1, secondDi[i] - j+2, dj[i] + j-2, secondDi[i] - j+3, dj[i] + j-3)
+                        let whinnerBalls=[ballMatrix[secondDi[i] - j][dj[i] + j],ballMatrix[secondDi[i] - j + 1][dj[i] + j - 1],ballMatrix[secondDi[i] - j + 2][dj[i] + j - 2],ballMatrix[secondDi[i] - j + 3][dj[i] + j - 3]]
+                        OutputWinner(whinnerBalls)
                     }
                 }
                 else{
@@ -146,7 +149,8 @@ function checkLines(colorOfPlayer) {
             if (ballMatrix[i][j].color == colorOfPlayer) {
                 ++counter
                 if (counter == 4) {
-                    OutputWinner(i, j, i, j - 1, i, j - 2, i, j - 3)
+                    let whinnerBalls=[ballMatrix[i][j],ballMatrix[i][j-1],ballMatrix[i][j-2],ballMatrix[i][j-3]]
+                    OutputWinner(whinnerBalls)
                     return;
                 }
             } else {
@@ -163,7 +167,8 @@ function checkColumn(colorOfPlayer) {
             if (ballMatrix[j][i].color == colorOfPlayer) {
                 ++counter
                 if (counter == 4) {
-                    OutputWinner(j, i, j - 1, i, j - 2, i, j - 3, i)
+                    let whinnerBalls=[ballMatrix[j][i],ballMatrix[j-1][i],ballMatrix[j-2][i],ballMatrix[j-3][i]]
+                    OutputWinner(whinnerBalls)
                     return;
                 }
             } else {
@@ -173,25 +178,15 @@ function checkColumn(colorOfPlayer) {
     }
 }
 
-function OutputWinner(i1, j1, i2, j2, i3, j3, i4, j4) {
+function OutputWinner(whinnerBalls) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    ballMatrix[i1][j1].shadowColor = "white"
-    ballMatrix[i1][j1].shadowBlur = 50
-    ballMatrix[i1][j1].whinnerStyle = 6
-    ballMatrix[i1][j1].draw(ctx)
-    ballMatrix[i2][j2].shadowColor = "white"
-    ballMatrix[i2][j2].shadowBlur = 50
-    ballMatrix[i2][j2].whinnerStyle = 6
-    ballMatrix[i2][j2].draw(ctx)
-    ballMatrix[i3][j3].shadowColor = "white"
-    ballMatrix[i3][j3].shadowBlur = 50
-    ballMatrix[i3][j3].whinnerStyle = 6
-    ballMatrix[i3][j3].draw(ctx)
-    ballMatrix[i4][j4].shadowColor = "white"
-    ballMatrix[i4][j4].shadowBlur = 50
-    ballMatrix[i4][j4].whinnerStyle = 6
-    ballMatrix[i4][j4].draw(ctx)
+   for(let i=0;i<4;++i){
+    whinnerBalls[i].shadowColor = "white"
+    whinnerBalls[i].shadowBlur = 50
+    whinnerBalls[i].whinnerStyle = 6
+    whinnerBalls[i].draw(ctx)
+   }
     canvas.removeEventListener("click", eventHandler)
 }
 
