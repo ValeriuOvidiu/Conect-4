@@ -82,7 +82,7 @@ function eventHandler(event) {
         --currentPlayer
     }
     showCurrentPlayer()
-    checkDiagonals(colorOfPlayer)
+    checkTheDiagonals(colorOfPlayer)
     checkColumn(colorOfPlayer)
     checkLines(colorOfPlayer)
     checkTied(ctx)
@@ -105,37 +105,37 @@ function showCurrentPlayer() {
     currentPlayerBall.draw(secondCtx)
 }
 
-function checkDiagonals(colorOfPlayer) {
+function checkTheDiagonals(colorOfPlayer) {
     let dj = [0, 0, 0, 1, 2, 3]
     let di = [2, 1, 0, 0, 0, 0]
     let secondDi = [3, 4, 5, 5, 5, 5]
-    let mainCounter = 0
-    let secondCounter = 0
+    let mainDiagonelCounter = 0
+    let secondDiagonalCounter = 0
     for (let i = 0; i < 6; ++i) {
-        mainCounter = 0
+        mainDiagonelCounter = 0
         for (let j = 0; j < 7; ++j) {
             if (dj[i] + j <= 6 && di[i] + j <= 5) {
                 if (ballMatrix[di[i] + j][dj[i] + j].color == colorOfPlayer) {
-                    ++mainCounter
-                    if (mainCounter == 4) {
-                        let whinnerBalls=[ballMatrix[di[i] + j][dj[i] + j],ballMatrix[di[i] + j - 1][dj[i] + j - 1],ballMatrix[di[i] + j - 2][dj[i] + j - 2],ballMatrix[di[i] + j - 3][dj[i] + j - 3]]
-                        OutputWinner(whinnerBalls)
-                        
+                    ++mainDiagonelCounter
+                    if (mainDiagonelCounter == 4) {
+                        let connectedBalls = [ballMatrix[di[i] + j][dj[i] + j], ballMatrix[di[i] + j - 1][dj[i] + j - 1], ballMatrix[di[i] + j - 2][dj[i] + j - 2], ballMatrix[di[i] + j - 3][dj[i] + j - 3]]
+                        OutputWinner(connectedBalls)
+
                     }
                 } else {
-                    mainCounter = 0
+                    mainDiagonelCounter = 0
                 }
             }
             if (secondDi[i] - j >= 0 && dj[i] + j <= 6) {
                 if (ballMatrix[secondDi[i] - j][dj[i] + j].color == colorOfPlayer) {
-                    ++secondCounter
-                    if (secondCounter == 4) {
-                        let whinnerBalls=[ballMatrix[secondDi[i] - j][dj[i] + j],ballMatrix[secondDi[i] - j + 1][dj[i] + j - 1],ballMatrix[secondDi[i] - j + 2][dj[i] + j - 2],ballMatrix[secondDi[i] - j + 3][dj[i] + j - 3]]
-                        OutputWinner(whinnerBalls)
+                    ++secondDiagonalCounter
+                    if (secondDiagonalCounter == 4) {
+                        let connectedBalls = [ballMatrix[secondDi[i] - j][dj[i] + j], ballMatrix[secondDi[i] - j + 1][dj[i] + j - 1], ballMatrix[secondDi[i] - j + 2][dj[i] + j - 2], ballMatrix[secondDi[i] - j + 3][dj[i] + j - 3]]
+                        OutputWinner(connectedBalls)
                     }
                 }
-                else{
-                    secondCounter=0
+                else {
+                    secondDiagonalCounter = 0
                 }
             }
         }
@@ -144,17 +144,17 @@ function checkDiagonals(colorOfPlayer) {
 
 function checkLines(colorOfPlayer) {
     for (let i = 5; i >= 0; --i) {
-        let counter = 0
+        let countTheConnectedBalls = 0
         for (let j = 0; j < 7; ++j) {
             if (ballMatrix[i][j].color == colorOfPlayer) {
-                ++counter
-                if (counter == 4) {
-                    let whinnerBalls=[ballMatrix[i][j],ballMatrix[i][j-1],ballMatrix[i][j-2],ballMatrix[i][j-3]]
-                    OutputWinner(whinnerBalls)
+                ++countTheConnectedBalls
+                if (countTheConnectedBalls == 4) {
+                    let connectedBalls = [ballMatrix[i][j], ballMatrix[i][j - 1], ballMatrix[i][j - 2], ballMatrix[i][j - 3]]
+                    OutputWinner(connectedBalls)
                     return;
                 }
             } else {
-                counter = 0
+                countTheConnectedBalls = 0
             }
         }
     }
@@ -162,35 +162,35 @@ function checkLines(colorOfPlayer) {
 
 function checkColumn(colorOfPlayer) {
     for (let i = 0; i < 7; ++i) {
-        let counter = 0
+        let countTheConnectedBalls = 0
         for (let j = 0; j < 6; ++j) {
             if (ballMatrix[j][i].color == colorOfPlayer) {
-                ++counter
-                if (counter == 4) {
-                    let whinnerBalls=[ballMatrix[j][i],ballMatrix[j-1][i],ballMatrix[j-2][i],ballMatrix[j-3][i]]
-                    OutputWinner(whinnerBalls)
+                ++countTheConnectedBalls
+                if (countTheConnectedBalls == 4) {
+                    let connectedBalls = [ballMatrix[j][i], ballMatrix[j - 1][i], ballMatrix[j - 2][i], ballMatrix[j - 3][i]]
+                    OutputWinner(connectedBalls)
                     return;
                 }
             } else {
-                counter = 0
+                countTheConnectedBalls = 0
             }
         }
     }
 }
 
-function OutputWinner(whinnerBalls) {
+function OutputWinner(connectedBalls) {
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-   for(let i=0;i<4;++i){
-    whinnerBalls[i].shadowColor = "white"
-    whinnerBalls[i].shadowBlur = 50
-    whinnerBalls[i].whinnerStyle = 6
-    whinnerBalls[i].draw(ctx)
-   }
+    for (let i = 0; i < 4; ++i) {
+        connectedBalls[i].shadowColor = "white"
+        connectedBalls[i].shadowBlur = 50
+        connectedBalls[i].whinnerStyle = 6
+        connectedBalls[i].draw(ctx)
+    }
     canvas.removeEventListener("click", eventHandler)
 }
 
-let successivePlayer = 0
+let whoStartsTheGame = 0
 
 function restart() {
     addEvent()
@@ -207,8 +207,8 @@ function restart() {
             ballMatrix[i][j].draw(ctx)
         }
     }
-    ++successivePlayer
-    if (successivePlayer % 2 == 0) {
+    ++whoStartsTheGame
+    if (whoStartsTheGame % 2 == 0) {
         currentPlayer = 0
     } else {
         currentPlayer = 1
@@ -217,15 +217,15 @@ function restart() {
 }
 
 function checkTied(ctx) {
-    let checkWhite = 0
+    let findWhiteBalls = 0
     for (let i = 0; i < 6; ++i) {
         for (let j = 0; j < 7; ++j) {
             if (ballMatrix[i][j].color == "white") {
-                ++checkWhite;
+                ++findWhiteBalls;
             }
         }
     }
-    if (checkWhite == 0) {
+    if (findWhiteBalls == 0) {
         ctx.clearRect(0, 0, 700, 600)
         ctx.font = "100px serif";
         ctx.fillText("Egalitate", 150, 300);
